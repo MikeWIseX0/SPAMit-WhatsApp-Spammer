@@ -1,4 +1,4 @@
-# 🌲 SPAMit v3.0 — Deep Forest Edition
+# SPAMit v3.0
 
 [![Platform](https://img.shields.io/badge/Platform-Android-3DDC84.svg?style=flat-square&logo=android)](https://www.android.com)
 [![SDK](https://img.shields.io/badge/Target--SDK-35-green.svg?style=flat-square)](https://developer.android.com)
@@ -7,7 +7,7 @@
 **SPAMit** is a powerful, accessibility-based automation tool for WhatsApp, now completely reimagined with a premium design and modernized architecture. 
 
 > [!IMPORTANT]
-> **Revival Note:** This is the maintained and modernized fork of the original archived SPAMit project. It has been upgraded to support the latest Android versions and features a complete UI/UX overhaul.
+> **Revival Note:** This is the maintained and modernized fork of the original [SPAMit project](https://github.com/burhanuday/SPAMit-WhatsApp-Spammer) by [Burhanuday](https://github.com/burhanuday). It has been upgraded to support the latest Android versions and features a complete UI/UX overhaul.
 
 ---
 
