@@ -1,57 +1,147 @@
 package com.burhanuday.spamit;
 
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.CompoundButton;
-import android.widget.SeekBar;
-import android.widget.Switch;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.slider.Slider;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class Pref extends AppCompatActivity {
 
-    Switch vibrate, last_message;
-    SharedPreferences sharedPreferences;
+    private SwitchMaterial vibrateSwitch;
+    private SwitchMaterial lastMessageSwitch;
+    private SwitchMaterial darkModeSwitch;
+    private SwitchMaterial followSystemSwitch;
+    private Slider delaySlider;
+    private com.google.android.material.textfield.TextInputEditText delayInput;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        vibrate = (Switch)findViewById(R.id.switch_vibrate);
-        last_message = (Switch) findViewById(R.id.switch_share);
-        sharedPreferences = getSharedPreferences("com.burhanuday.spamit", MODE_PRIVATE);
+        // Set up toolbar with back button
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(R.string.title_settings);
+        }
+
+        prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        vibrateSwitch = findViewById(R.id.switch_vibrate);
+        lastMessageSwitch = findViewById(R.id.switch_share);
+        darkModeSwitch = findViewById(R.id.switch_dark_mode);
+        followSystemSwitch = findViewById(R.id.switch_system_theme);
+        delaySlider = findViewById(R.id.slider_delay);
+        delayInput = findViewById(R.id.et_delay_input);
 
         initialise();
         setChangeListeners();
-
     }
 
-    public void initialise(){
-        if(sharedPreferences.getBoolean("vibrate", true)){
-            vibrate.setChecked(true);
-        }else {
-            vibrate.setChecked(false);
-        }
-
-        if (sharedPreferences.getBoolean("last_message", true)){
-            last_message.setChecked(true);
-        }else {
-            last_message.setChecked(false);
-        }
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
-    public void setChangeListeners(){
-        vibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                sharedPreferences.edit().putBoolean("vibrate", b).apply();
+    private void initialise() {
+        vibrateSwitch.setChecked(prefs.getBoolean(Constants.KEY_VIBRATE, true));
+        lastMessageSwitch.setChecked(prefs.getBoolean(Constants.KEY_LAST_MESSAGE, true));
+        darkModeSwitch.setChecked(prefs.getBoolean(Constants.KEY_DARK_MODE, true));
+        
+        boolean followSystem = prefs.getBoolean(Constants.KEY_FOLLOW_SYSTEM, true);
+        followSystemSwitch.setChecked(followSystem);
+        darkModeSwitch.setEnabled(!followSystem);
+        darkModeSwitch.setAlpha(followSystem ? 0.5f : 1.0f);
+
+        // Delay slider and input
+        int delayMs = prefs.getInt(Constants.KEY_DELAY_MS, Constants.DEFAULT_DELAY_MS);
+        
+        if (delayMs < Constants.MIN_DELAY_MS) delayMs = Constants.MIN_DELAY_MS;
+        if (delayMs > Constants.MAX_DELAY_MS) delayMs = Constants.MAX_DELAY_MS;
+
+        delaySlider.setValueFrom(Constants.MIN_DELAY_MS);
+        delaySlider.setValueTo(Constants.MAX_DELAY_MS);
+        delaySlider.setStepSize(5);
+        
+        try {
+            delaySlider.setValue((float) delayMs);
+        } catch (IllegalArgumentException e) {
+            delaySlider.setValue((float) Constants.DEFAULT_DELAY_MS);
+            delayMs = Constants.DEFAULT_DELAY_MS;
+        }
+
+        delayInput.setText(String.valueOf(delayMs));
+    }
+
+    private void setChangeListeners() {
+        vibrateSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                prefs.edit().putBoolean(Constants.KEY_VIBRATE, isChecked).apply());
+
+        lastMessageSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                prefs.edit().putBoolean(Constants.KEY_LAST_MESSAGE, isChecked).apply());
+
+        followSystemSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean(Constants.KEY_FOLLOW_SYSTEM, isChecked).apply();
+            darkModeSwitch.setEnabled(!isChecked);
+            darkModeSwitch.setAlpha(isChecked ? 0.5f : 1.0f);
+            
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            } else {
+                boolean isDarkMode = prefs.getBoolean(Constants.KEY_DARK_MODE, true);
+                AppCompatDelegate.setDefaultNightMode(
+                        isDarkMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
 
-        last_message.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            prefs.edit().putBoolean(Constants.KEY_DARK_MODE, isChecked).apply();
+            if (!followSystemSwitch.isChecked()) {
+                AppCompatDelegate.setDefaultNightMode(
+                        isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        });
+
+        delaySlider.addOnChangeListener((slider, value, fromUser) -> {
+            int delay = (int) value;
+            if (fromUser) {
+                delayInput.setText(String.valueOf(delay));
+                prefs.edit().putInt(Constants.KEY_DELAY_MS, delay).apply();
+            }
+        });
+
+        delayInput.addTextChangedListener(new android.text.TextWatcher() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                sharedPreferences.edit().putBoolean("last_message", b).apply();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                String val = s.toString();
+                if (val.isEmpty()) return;
+
+                try {
+                    int delay = Integer.parseInt(val);
+                    if (delay >= Constants.MIN_DELAY_MS && delay <= Constants.MAX_DELAY_MS) {
+                        // Avoid infinite loop by checking if value actually changed
+                        if (delaySlider.getValue() != (float) delay) {
+                            // Slider value must be a multiple of stepSize
+                            float snappedDelay = Math.round(delay / 5.0f) * 5.0f;
+                            delaySlider.setValue(snappedDelay);
+                        }
+                        prefs.edit().putInt(Constants.KEY_DELAY_MS, delay).apply();
+                    }
+                } catch (Exception ignored) {}
             }
         });
     }

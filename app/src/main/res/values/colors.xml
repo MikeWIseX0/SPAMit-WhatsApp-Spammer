@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#79302a</color>
-    <color name="colorPrimaryDark">#561e1c</color>
-    <color name="colorAccent">#345f41</color>
+    <!-- Primary palette — Light Forest Theme (From App Logo) -->
+    <color name="colorPrimary">#345F41</color> <!-- Deep Forest Green -->
+    <color name="colorPrimaryDark">#1D3522</color> <!-- Dark Forest Green -->
+    <color name="colorPrimaryLight">#E3E5E4</color> <!-- Off-White -->
+
+    <!-- Accent — Forest Green -->
+    <color name="colorAccent">#345F41</color> 
+    <color name="colorAccentDark">#1D3522</color>
+
+    <!-- Surface colors -->
+    <color name="colorSurface">#FFFFFF</color> 
+    <color name="colorSurfaceLight">#F8FAFC</color> 
+    <color name="colorBackground">#E3E5E4</color>
+
+    <!-- Text colors -->
+    <color name="textPrimary">#1D3522</color> 
+    <color name="textSecondary">#345F41</color> 
+    <color name="textHint">#94A3B8</color>
+
+    <!-- Status colors -->
+    <color name="colorSuccess">#345F41</color>
+    <color name="colorWarning">#F59E0B</color>
+    <color name="colorError">#EF4444</color>
+
+    <!-- Card colors -->
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="cardStroke">#D0D5D9</color>
 </resources>

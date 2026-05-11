@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary palette — Dark Forest Theme (From App Logo) -->
+    <color name="colorPrimary">#345F41</color> <!-- Deep Forest Green -->
+    <color name="colorPrimaryDark">#080D0A</color> <!-- Very Dark Green-Black -->
+    <color name="colorPrimaryLight">#4E815D</color> <!-- Lighter Green -->
+
+    <!-- Accent — Forest Green -->
+    <color name="colorAccent">#3A6B49</color> <!-- Slightly brightened for dark mode contrast -->
+    <color name="colorAccentDark">#1D3522</color>
+
+    <!-- Surface colors -->
+    <color name="colorSurface">#111B14</color> <!-- Dark Green-Gray Surface -->
+    <color name="colorSurfaceLight">#19261D</color> <!-- Lighter Green-Gray for inputs -->
+    <color name="colorBackground">#080D0A</color> <!-- Premium Dark Green-Black -->
+
+    <!-- Text colors -->
+    <color name="textPrimary">#E3E5E4</color> <!-- Off-White from logo -->
+    <color name="textSecondary">#B0B4B7</color> <!-- Light Gray from logo -->
+    <color name="textHint">#758378</color> <!-- Green-tinted gray -->
+
+    <!-- Card colors -->
+    <color name="cardBackground">#111B14</color>
+    <color name="cardStroke">#1D3522</color> <!-- Logo dark green for a subtle outline -->
+</resources>
